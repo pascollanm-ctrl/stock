@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Billing Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding-top: 70px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: 70px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Left Panel - Items Grid */
+        .items-panel {
+            flex: 2;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .panel-header h2 {
+            display: flex;
+            align-items: center;
+        }
+
+        .panel-header h2 i {
+            margin-right: 10px;
+        }
+
+        .search-container {
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            background: white;
+        }
+
+        .items-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .item-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3498db;
+        }
+
+        .item-card.selected {
+            border-color: #2ecc71;
+            background: #e8f8f1;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+
+        .item-image i {
+            font-size: 2rem;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .item-price {
+            color: #27ae60;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .item-stock {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        /* Middle Panel - Transaction */
+        .transaction-panel {
+            flex: 3;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-header h2 {
+            display: flex;
+            align-items: center;
+            color: #2c3e50;
+        }
+
+        .transaction-header h2 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .transaction-id {
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+
+        .transaction-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transaction-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid #eee;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+
+        .transaction-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .transaction-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #2980b9;
+        }
+
+        .qty-btn.remove {
+            background: #e74c3c;
+        }
+
+        .qty-btn.remove:hover {
+            background: #c0392b;
+        }
+
+        .quantity {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .item-total {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .remove-item {
+            color: #e74c3c;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .remove-item:hover {
+            background: #ffeaea;
+        }
+
+        .transaction-summary {
+            padding: 20px;
+            border-top: 2px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #ddd;
+        }
+
+        .summary-label {
+            color: #7f8c8d;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .total-value {
+            color: #27ae60;
+        }
+
+        /* Right Panel - Checkout */
+        .checkout-panel {
+            flex: 2;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .checkout-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .checkout-header h2 {
+            display: flex;
+            align-items: center;
+            color: #2c3e50;
+        }
+
+        .checkout-header h2 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .input-group {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            flex: 1;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 5px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .number-pad {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            flex: 1;
+        }
+
+        .num-btn {
+            padding: 20px 10px;
+            border: none;
+            border-radius: 10px;
+            background: #f8f9fa;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2c3e50;
+        }
+
+        .num-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .num-btn.clear {
+            background: #ffeaa7;
+            color: #e17055;
+        }
+
+        .num-btn.clear:hover {
+            background: #fdcb6e;
+        }
+
+        .num-btn.enter {
+            background: #55efc4;
+            color: #00b894;
+        }
+
+        .num-btn.enter:hover {
+            background: #00b894;
+            color: white;
+        }
+
+        .checkout-actions {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #219653 0%, #27ae60 100%);
+        }
+
+        .clear-btn {
+            background: #f8f9fa;
+            color: #e74c3c;
+            border: 2px solid #ffeaa7;
+        }
+
+        .clear-btn:hover {
+            background: #ffeaa7;
+        }
+
+        /* Receipt Styles (for printing) */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .receipt-container, .receipt-container * {
+                visibility: visible;
+            }
+            
+            .receipt-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                font-size: 14px;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        .receipt-container {
+            display: none;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .receipt-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .receipt-details {
+            margin-bottom: 15px;
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .receipt-table th, .receipt-table td {
+            padding: 8px 5px;
+            border-bottom: 1px dashed #ddd;
+            text-align: left;
+        }
+
+        .receipt-table th {
+            border-bottom: 2px solid #000;
+        }
+
+        .receipt-total {
+            border-top: 2px dashed #000;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+                overflow-y: auto;
+            }
+            
+            .items-panel, .transaction-panel, .checkout-panel {
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 1rem;
+                height: 60px;
+            }
+            
+            body {
+                padding-top: 60px;
+            }
+            
+            .nav-links {
+                font-size: 0.9rem;
+            }
+            
+            .nav-links li {
+                margin-left: 1rem;
+            }
+            
+            .main-container {
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+                padding: 15px;
+            }
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-cart i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-cash-register"></i>
+            <span>POS System</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../stock/index.html"><i class="fas fa-boxes"></i> Stock</a></li>
+            <li><a href="index.html" class="active"><i class="fas fa-cash-register"></i> Billing</a></li>
+            <li><a href="../dashboard/index.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Panel - Items Grid -->
+        <div class="items-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-th-large"></i> Select Items</h2>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="itemSearch" placeholder="Search items by name or barcode...">
+                </div>
+            </div>
+            <div class="items-grid" id="itemsGrid">
+                <!-- Items will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Middle Panel - Transaction -->
+        <div class="transaction-panel">
+            <div class="transaction-header">
+                <h2><i class="fas fa-shopping-cart"></i> Current Transaction</h2>
+                <div class="transaction-id">TRX-<span id="transactionId">000001</span></div>
+            </div>
+            <div class="transaction-list">
+                <table class="transaction-table" id="transactionTable">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionBody">
+                        <!-- Transaction items will appear here -->
+                    </tbody>
+                </table>
+                <div id="emptyCart" class="empty-cart" style="display: none;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Cart is Empty</h3>
+                    <p>Select items from the left panel to begin</p>
+                </div>
+            </div>
+            <div class="transaction-summary">
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal:</span>
+                    <span class="summary-value" id="subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Discount:</span>
+                    <span class="summary-value" id="discount">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Tax (8%):</span>
+                    <span class="summary-value" id="tax">$0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span class="summary-label">TOTAL:</span>
+                    <span class="summary-value total-value" id="total">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Checkout -->
+        <div class="checkout-panel">
+            <div class="checkout-header">
+                <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+            </div>
+            <div class="input-group">
+                <div class="input-row">
+                    <div class="input-field">
+                        <label>Quantity</label>
+                        <input type="text" id="quantityInput" value="1" readonly>
+                    </div>
+                    <div class="input-field">
+                        <label>Discount ($)</label>
+                        <input type="text" id="discountInput" value="0.00" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="number-pad">
+                <button class="num-btn" data-value="1">1</button>
+                <button class="num-btn" data-value="2">2</button>
+                <button class="num-btn" data-value="3">3</button>
+                <button class="num-btn" data-value="4">4</button>
+                <button class="num-btn" data-value="5">5</button>
+                <button class="num-btn" data-value="6">6</button>
+                <button class="num-btn" data-value="7">7</button>
+                <button class="num-btn" data-value="8">8</button>
+                <button class="num-btn" data-value="9">9</button>
+                <button class="num-btn clear" id="clearInput">C</button>
+                <button class="num-btn" data-value="0">0</button>
+                <button class="num-btn" data-value=".">.</button>
+                <button class="num-btn enter" id="applyQuantity">QTY</button>
+                <button class="num-btn enter" id="applyDiscount">DISC</button>
+            </div>
+            <div class="checkout-actions">
+                <button class="action-btn clear-btn" id="clearCart">
+                    <i class="fas fa-trash-alt"></i> Clear Cart
+                </button>
+                <button class="action-btn checkout-btn" id="checkoutBtn">
+                    <i class="fas fa-receipt"></i> Complete Sale & Print
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Receipt for Printing -->
+    <div class="receipt-container" id="receiptContainer">
+        <div class="receipt-header">
+            <h2>STOCKMASTER PRO</h2>
+            <p>POS System Receipt</p>
+            <p>Transaction #: <span id="receiptTransactionId">TRX-000001</span></p>
+            <p>Date: <span id="receiptDate">01/01/2023 10:00 AM</span></p>
+        </div>
+        <div class="receipt-details">
+            <p>Cashier: POS System</p>
+        </div>
+        <table class="receipt-table" id="receiptTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="receiptBody">
+                <!-- Receipt items will be added here -->
+            </tbody>
+        </table>
+        <div class="receipt-total">
+            <p>Subtotal: <span id="receiptSubtotal">$0.00</span></p>
+            <p>Discount: <span id="receiptDiscount">$0.00</span></p>
+            <p>Tax (8%): <span id="receiptTax">$0.00</span></p>
+            <p><strong>TOTAL: <span id="receiptTotal">$0.00</span></strong></p>
+        </div>
+        <div class="receipt-footer">
+            <p>Thank you for your business!</p>
+            <p>www.stockmasterpro.com</p>
+            <p>Support: support@stockmasterpro.com</p>
+        </div>
+    </div>
+
+    <script>
+        // Database and state variables
+        let db;
+        let cart = [];
+        let items = [];
+        let currentInput = '';
+        let currentInputMode = 'quantity'; // 'quantity' or 'discount'
+        let transactionCounter = localStorage.getItem('transactionCounter') || 1;
+
+        // DOM Elements
+        const itemsGrid = document.getElementById('itemsGrid');
+        const itemSearch = document.getElementById('itemSearch');
+        const transactionBody = document.getElementById('transactionBody');
+        const emptyCart = document.getElementById('emptyCart');
+        const quantityInput = document.getElementById('quantityInput');
+        const discountInput = document.getElementById('discountInput');
+        const subtotalElement = document.getElementById('subtotal');
+        const discountElement = document.getElementById('discount');
+        const taxElement = document.getElementById('tax');
+        const totalElement = document.getElementById('total');
+        const transactionIdElement = document.getElementById('transactionId');
+        const clearCartBtn = document.getElementById('clearCart');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const clearInputBtn = document.getElementById('clearInput');
+        const applyQuantityBtn = document.getElementById('applyQuantity');
+        const applyDiscountBtn = document.getElementById('applyDiscount');
+        const receiptContainer = document.getElementById('receiptContainer');
+        const receiptBody = document.getElementById('receiptBody');
+        const receiptSubtotal = document.getElementById('receiptSubtotal');
+        const receiptDiscount = document.getElementById('receiptDiscount');
+        const receiptTax = document.getElementById('receiptTax');
+        const receiptTotal = document.getElementById('receiptTotal');
+        const receiptTransactionId = document.getElementById('receiptTransactionId');
+        const receiptDate = document.getElementById('receiptDate');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            initDB();
+            setupEventListeners();
+            generateTransactionId();
+            loadItems();
+        });
+
+        // Initialize IndexedDB
+        function initDB() {
+            const request = indexedDB.open('posDB', 2); // Version 2 to add sales store
+            
+            request.onerror = (event) => {
+                console.error('Database error:', event.target.error);
+                alert('Failed to open database. Please check if your browser supports IndexedDB.');
+            };
+            
+            request.onupgradeneeded = (event) => {
+                db = event.target.result;
+                
+                // Create sales object store if it doesn't exist
+                if (!db.objectStoreNames.contains('sales')) {
+                    const salesStore = db.createObjectStore('sales', { 
+                        keyPath: 'id',
+                        autoIncrement: true 
+                    });
+                    
+                    // Create indexes for sales
+                    salesStore.createIndex('date', 'date', { unique: false });
+                    salesStore.createIndex('total', 'total', { unique: false });
+                }
+                
+                // Ensure stock store exists
+                if (!db.objectStoreNames.contains('stock')) {
+                    db.createObjectStore('stock', { keyPath: 'barcode' });
+                }
+            };
+            
+            request.onsuccess = (event) => {
+                db = event.target.result;
+                console.log('Database initialized successfully');
+            };
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Number pad buttons
+            document.querySelectorAll('.num-btn[data-value]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    handleNumberInput(btn.getAttribute('data-value'));
+                });
+            });
+            
+            // Clear input button
+            clearInputBtn.addEventListener('click', clearCurrentInput);
+            
+            // Apply quantity button
+            applyQuantityBtn.addEventListener('click', () => {
+                currentInputMode = 'quantity';
+                applyCurrentInput();
+            });
+            
+            // Apply discount button
+            applyDiscountBtn.addEventListener('click', () => {
+                currentInputMode = 'discount';
+                applyCurrentInput();
+            });
+            
+            // Cart buttons
+            clearCartBtn.addEventListener('click', clearCart);
+            checkoutBtn.addEventListener('click', processCheckout);
+            
+            // Search functionality
+            itemSearch.addEventListener('input', filterItems);
+        }
+
+        // Generate unique transaction ID
+        function generateTransactionId() {
+            const paddedId = transactionCounter.toString().padStart(6, '0');
+            transactionIdElement.textContent = paddedId;
+            return `TRX-${paddedId}`;
+        }
+
+        // Load items from IndexedDB
+        function loadItems() {
+            const transaction = db.transaction(['stock'], 'readonly');
+            const objectStore = transaction.objectStore('stock');
+            const request = objectStore.getAll();
+            
+            request.onsuccess = (event) => {
+                items = event.target.result;
+                renderItemsGrid(items);
+            };
+            
+            request.onerror = (event) => {
+                console.error('Error loading items:', event.target.error);
+                alert('Failed to load items from database.');
+            };
+        }
+
+        // Render items grid
+        function renderItemsGrid(itemsToRender) {
+            itemsGrid.innerHTML = '';
+            
+            if (itemsToRender.length === 0) {
+                itemsGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: #7f8c8d;">No items found in inventory.</div>';
+                return;
+            }
+            
+            itemsToRender.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.dataset.barcode = item.barcode;
+                
+                const imageHtml = item.image 
+                    ? `<img src="${item.image}" class="item-image" alt="${item.name}">`
+                    : `<div class="item-image"><i class="fas fa-box"></i></div>`;
+                
+                itemCard.innerHTML = `
+                    ${imageHtml}
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">$${item.sellingPrice.toFixed(2)}</div>
+                    <div class="item-stock">SKU: ${item.barcode}</div>
+                `;
+                
+                itemCard.addEventListener('click', () => addToCart(item));
+                itemsGrid.appendChild(itemCard);
+            });
+        }
+
+        // Filter items based on search
+        function filterItems() {
+            const searchTerm = itemSearch.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderItemsGrid(items);
+                return;
+            }
+            
+            const filteredItems = items.filter(item => {
+                return (
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.barcode.toLowerCase().includes(searchTerm) ||
+                    (item.category && item.category.toLowerCase().includes(searchTerm))
+                );
+            });
+            
+            renderItemsGrid(filteredItems);
+        }
+
+        // Add item to cart
+        function addToCart(item) {
+            // Check if item already exists in cart
+            const existingItemIndex = cart.findIndex(cartItem => cartItem.barcode === item.barcode);
+            
+            if (existingItemIndex !== -1) {
+                // Increase quantity if item already in cart
+                cart[existingItemIndex].quantity += parseInt(quantityInput.value) || 1;
+            } else {
+                // Add new item to cart
+                cart.push({
+                    ...item,
+                    quantity: parseInt(quantityInput.value) || 1
+                });
+            }
+            
+            // Reset quantity input
+            quantityInput.value = '1';
+            currentInput = '';
+            
+            // Update UI
+            updateTransactionDisplay();
+            updateSummary();
+        }
+
+        // Update transaction display
+        function updateTransactionDisplay() {
+            transactionBody.innerHTML = '';
+            
+            if (cart.length === 0) {
+                emptyCart.style.display = 'block';
+                return;
+            }
+            
+            emptyCart.style.display = 'none';
+            
+            cart.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const itemTotal = item.sellingPrice * item.quantity;
+                
+                row.innerHTML = `
+                    <td>
+                        <strong>${item.name}</strong><br>
+                        <small style="color: #7f8c8d;">${item.barcode}</small>
+                    </td>
+                    <td>$${item.sellingPrice.toFixed(2)}</td>
+                    <td>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${index}, ${item.quantity - 1})">-</button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${index}, ${item.quantity + 1})">+</button>
+                        </div>
+                    </td>
+                    <td class="item-total">$${itemTotal.toFixed(2)}</td>
+                    <td>
+                        <div class="remove-item" onclick="removeFromCart(${index})">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </td>
+                `;
+                
+                transactionBody.appendChild(row);
+            });
+        }
+
+        // Update item quantity
+        function updateQuantity(index, newQuantity) {
+            if (newQuantity < 1) {
+                removeFromCart(index);
+                return;
+            }
+            
+            cart[index].quantity = newQuantity;
+            updateTransactionDisplay();
+            updateSummary();
+        }
+
+        // Remove item from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateTransactionDisplay();
+            updateSummary();
+        }
+
+        // Clear entire cart
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear the entire cart?')) {
+                cart = [];
+                updateTransactionDisplay();
+                updateSummary();
+                quantityInput.value = '1';
+                discountInput.value = '0.00';
+                currentInput = '';
+            }
+        }
+
+        // Calculate and update summary
+        function updateSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0);
+            const discount = parseFloat(discountInput.value) || 0;
+            const tax = (subtotal - discount) * 0.08; // 8% tax
+            const total = subtotal - discount + tax;
+            
+            subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+            discountElement.textContent = `$${discount.toFixed(2)}`;
+            taxElement.textContent = `$${tax.toFixed(2)}`;
+            totalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Handle number pad input
+        function handleNumberInput(value) {
+            if (value === '.' && currentInput.includes('.')) {
+                return; // Prevent multiple decimal points
+            }
+            
+            currentInput += value;
+            
+            if (currentInputMode === 'quantity') {
+                quantityInput.value = currentInput;
+            } else {
+                discountInput.value = parseFloat(currentInput).toFixed(2);
+            }
+        }
+
+        // Clear current input
+        function clearCurrentInput() {
+            currentInput = '';
+            
+            if (currentInputMode === 'quantity') {
+                quantityInput.value = '1';
+            } else {
+                discountInput.value = '0.00';
+            }
+        }
+
+        // Apply current input
+        function applyCurrentInput() {
+            if (currentInputMode === 'discount') {
+                const discount = parseFloat(currentInput) || 0;
+                const subtotal = cart.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0);
+                
+                // Ensure discount doesn't exceed subtotal
+                if (discount > subtotal) {
+                    alert('Discount cannot exceed subtotal.');
+                    discountInput.value = '0.00';
+                } else {
+                    discountInput.value = discount.toFixed(2);
+                }
+                
+                updateSummary();
+            }
+            
+            currentInput = '';
+        }
+
+        // Process checkout
+        function processCheckout() {
+            if (cart.length === 0) {
+                alert('Cart is empty. Add items before checking out.');
+                return;
+            }
+            
+            // Calculate final amounts
+            const subtotal = cart.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0);
+            const discount = parseFloat(discountInput.value) || 0;
+            const tax = (subtotal - discount) * 0.08;
+            const total = subtotal - discount + tax;
+            
+            // Create sale record
+            const sale = {
+                transactionId: generateTransactionId(),
+                date: new Date().toISOString(),
+                items: cart.map(item => ({
+                    barcode: item.barcode,
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.sellingPrice,
+                    total: item.sellingPrice * item.quantity
+                })),
+                subtotal: subtotal,
+                discount: discount,
+                tax: tax,
+                total: total
+            };
+            
+            // Save to IndexedDB
+            saveSale(sale);
+        }
+
+        // Save sale to IndexedDB
+        function saveSale(sale) {
+            const transaction = db.transaction(['sales'], 'readwrite');
+            const salesStore = transaction.objectStore('sales');
+            const request = salesStore.add(sale);
+            
+            request.onsuccess = () => {
+                console.log('Sale saved successfully:', sale.transactionId);
+                generateReceipt(sale);
+                resetTransaction();
+            };
+            
+            request.onerror = (event) => {
+                console.error('Error saving sale:', event.target.error);
+                alert('Failed to save transaction. Please try again.');
+            };
+        }
+
+        // Generate and print receipt
+        function generateReceipt(sale) {
+            // Update receipt content
+            receiptTransactionId.textContent = sale.transactionId;
+            receiptDate.textContent = new Date(sale.date).toLocaleString();
+            
+            // Clear and populate receipt items
+            receiptBody.innerHTML = '';
+            sale.items.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${item.total.toFixed(2)}</td>
+                `;
+                receiptBody.appendChild(row);
+            });
+            
+            // Update receipt totals
+            receiptSubtotal.textContent = `$${sale.subtotal.toFixed(2)}`;
+            receiptDiscount.textContent = `$${sale.discount.toFixed(2)}`;
+            receiptTax.textContent = `$${sale.tax.toFixed(2)}`;
+            receiptTotal.textContent = `$${sale.total.toFixed(2)}`;
+            
+            // Show receipt and print
+            receiptContainer.style.display = 'block';
+            window.print();
+            receiptContainer.style.display = 'none';
+        }
+
+        // Reset transaction after checkout
+        function resetTransaction() {
+            // Increment transaction counter
+            transactionCounter++;
+            localStorage.setItem('transactionCounter', transactionCounter);
+            
+            // Clear cart and inputs
+            cart = [];
+            quantityInput.value = '1';
+            discountInput.value = '0.00';
+            currentInput = '';
+            
+            // Update UI
+            updateTransactionDisplay();
+            updateSummary();
+            generateTransactionId();
+            
+            // Show success message
+            alert('Transaction completed successfully! Receipt has been printed.');
+        }
+
+        // Make functions available globally for inline event handlers
+        window.updateQuantity = updateQuantity;
+        window.removeFromCart = removeFromCart;
+    </script>
+</body>
+</html>

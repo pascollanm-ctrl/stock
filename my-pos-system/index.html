@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - Main Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 800px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 3.5rem;
+            color: #3498db;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 50%;
+        }
+
+        .logo h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #bdc3c7;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(52, 152, 219, 0.3);
+        }
+
+        .module-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .stock-icon { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .billing-icon { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+        .dashboard-icon { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        .login-icon { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+
+        .module-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .module-card p {
+            color: #ecf0f1;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            width: fit-content;
+        }
+
+        .btn-stock {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-billing {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .btn-dashboard {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .feature i {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ecf0f1;
+        }
+
+        .feature p {
+            color: #bdc3c7;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .instructions {
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .instructions h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .instructions p {
+            color: #bdc3c7;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .demo-notes {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .demo-notes h4 {
+            color: #3498db;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .demo-notes ul {
+            list-style: none;
+            text-align: left;
+            margin: 15px auto 0;
+            max-width: 600px;
+        }
+
+        .demo-notes li {
+            margin-bottom: 10px;
+            color: #ecf0f1;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .demo-notes li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 800px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #2ecc71;
+            text-decoration: underline;
+        }
+
+        .system-status {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2ecc71;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .module-card {
+                padding: 30px 20px;
+            }
+            
+            .module-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                margin-bottom: 30px;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            
+            .module-card h2 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-warehouse"></i>
+            <h1>StockMaster Pro POS</h1>
+        </div>
+        <p class="tagline">Complete Point of Sale System with Inventory Management, Billing, and Analytics</p>
+        
+        <div class="system-status">
+            <div class="status-indicator"></div>
+            <span>System Status: Online</span>
+        </div>
+    </div>
+
+    <div class="modules-grid">
+        <!-- Stock Management Module -->
+        <div class="module-card">
+            <div class="module-icon stock-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <h2>Inventory Management</h2>
+            <p>Manage your product inventory, track stock levels, add/edit items, and maintain complete control over your merchandise with real-time updates.</p>
+            <a href="stock/index.html" class="btn btn-stock">
+                <i class="fas fa-external-link-alt"></i> Open Stock Module
+            </a>
+        </div>
+
+        <!-- POS Billing Module -->
+        <div class="module-card">
+            <div class="module-icon billing-icon">
+                <i class="fas fa-cash-register"></i>
+            </div>
+            <h2>POS Billing System</h2>
+            <p>Process sales transactions quickly and efficiently with our intuitive point-of-sale interface, number pad, and instant receipt generation.</p>
+            <a href="billing/index.html" class="btn btn-billing">
+                <i class="fas fa-external-link-alt"></i> Open Billing Module
+            </a>
+        </div>
+
+        <!-- Sales Dashboard -->
+        <div class="module-card">
+            <div class="module-icon dashboard-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h2>Sales Dashboard</h2>
+            <p>Analyze sales performance, view key metrics, generate reports, and gain insights into your business with comprehensive analytics.</p>
+            <a href="dashboard/index.html" class="btn btn-dashboard">
+                <i class="fas fa-external-link-alt"></i> Open Dashboard
+            </a>
+        </div>
+
+        <!-- Login System -->
+        <div class="module-card">
+            <div class="module-icon login-icon">
+                <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <h2>Login System</h2>
+            <p>Secure access control with user authentication. Manage user sessions and maintain security across the entire POS system.</p>
+            <a href="login.html" class="btn btn-login">
+                <i class="fas fa-external-link-alt"></i> Open Login
+            </a>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3><i class="fas fa-info-circle"></i> Getting Started</h3>
+        <p>1. Start with the <strong>Login System</strong> to access the demo with admin credentials</p>
+        <p>2. Use the <strong>Inventory Management</strong> module to add products and manage stock</p>
+        <p>3. Process sales in the <strong>POS Billing System</strong></p>
+        <p>4. Analyze performance in the <strong>Sales Dashboard</strong></p>
+        <p>All data is stored locally in your browser using IndexedDB</p>
+    </div>
+
+    <div class="demo-notes">
+        <h4><i class="fas fa-flask"></i> Demo Features & Notes</h4>
+        <ul>
+            <li>Complete offline functionality - no internet required</li>
+            <li>Real-time data synchronization across all modules</li>
+            <li>Professional receipt generation and printing</li>
+            <li>Advanced analytics with charts and filters</li>
+            <li>Fully responsive design for all devices</li>
+            <li>Data persistence through browser sessions</li>
+        </ul>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <i class="fas fa-database"></i>
+            <h3>IndexedDB Storage</h3>
+            <p>All data is stored securely in your browser's database</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-mobile-alt"></i>
+            <h3>Mobile Responsive</h3>
+            <p>Works perfectly on desktop, tablet, and mobile devices</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-sync-alt"></i>
+            <h3>Real-time Updates</h3>
+            <p>Changes in one module instantly reflect across all others</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-chart-bar"></i>
+            <h3>Advanced Analytics</h3>
+            <p>Comprehensive reporting and data visualization</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2023 StockMaster Pro POS System. All rights reserved.</p>
+        <p>Built with HTML, CSS, and Vanilla JavaScript | <a href="#" onclick="clearLocalData()">Reset Demo Data</a> | <a href="#" onclick="exportAllData()">Export All Data</a></p>
+        <p>This is a demo system. All data is stored locally in your browser.</p>
+    </div>
+
+    <script>
+        // Check if user is logged in (optional feature)
+        const isLoggedIn = sessionStorage.getItem('isAuthenticated');
+        
+        // Update system status based on login state
+        if (isLoggedIn) {
+            document.querySelector('.system-status span').textContent = 'System Status: Online (Logged In)';
+        }
+
+        // Function to clear all demo data
+        function clearLocalData() {
+            if (confirm('This will clear ALL demo data including inventory, sales, and user data. Are you sure?')) {
+                // Clear IndexedDB
+                const request = indexedDB.deleteDatabase('posDB');
+                
+                request.onsuccess = () => {
+                    // Clear localStorage and sessionStorage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    
+                    alert('All demo data has been cleared. The page will reload.');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                };
+                
+                request.onerror = () => {
+                    alert('Error clearing data. Please try again.');
+                };
+            }
+        }
+
+        // Function to export all data as JSON
+        function exportAllData() {
+            const request = indexedDB.open('posDB', 2);
+            
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+                const transaction = db.transaction(['stock', 'sales'], 'readonly');
+                
+                const stockStore = transaction.objectStore('stock');
+                const salesStore = transaction.objectStore('sales');
+                
+                const stockRequest = stockStore.getAll();
+                const salesRequest = salesStore.getAll();
+                
+                Promise.all([
+                    new Promise(resolve => {
+                        stockRequest.onsuccess = (e) => resolve({ stock: e.target.result });
+                    }),
+                    new Promise(resolve => {
+                        salesRequest.onsuccess = (e) => resolve({ sales: e.target.result });
+                    })
+                ]).then(results => {
+                    const allData = Object.assign({}, ...results);
+                    allData.exportDate = new Date().toISOString();
+                    allData.system = 'StockMaster Pro POS';
+                    
+                    // Create download link
+                    const dataStr = JSON.stringify(allData, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(dataBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `pos-backup-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    alert('All data exported successfully!');
+                }).catch(error => {
+                    console.error('Error exporting data:', error);
+                    alert('Error exporting data. Please try again.');
+                });
+            };
+            
+            request.onerror = () => {
+                alert('Error accessing database. Please try again.');
+            };
+        }
+
+        // Function to import data from JSON file
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        if (confirm('This will replace all existing data. Are you sure?')) {
+                            importDataToIndexedDB(data);
+                        }
+                    } catch (error) {
+                        alert('Invalid file format. Please select a valid backup file.');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // Function to import data to IndexedDB
+        function importDataToIndexedDB(data) {
+            const request = indexedDB.open('posDB', 2);
+            
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                
+                if (!db.objectStoreNames.contains('stock')) {
+                    db.createObjectStore('stock', { keyPath: 'barcode' });
+                }
+                
+                if (!db.objectStoreNames.contains('sales')) {
+                    db.createObjectStore('sales', { keyPath: 'id', autoIncrement: true });
+                }
+            };
+            
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+                const transaction = db.transaction(['stock', 'sales'], 'readwrite');
+                
+                const stockStore = transaction.objectStore('stock');
+                const salesStore = transaction.objectStore('sales');
+                
+                // Clear existing data
+                stockStore.clear();
+                salesStore.clear();
+                
+                // Import stock data
+                if (data.stock && Array.isArray(data.stock)) {
+                    data.stock.forEach(item => {
+                        stockStore.add(item);
+                    });
+                }
+                
+                // Import sales data
+                if (data.sales && Array.isArray(data.sales)) {
+                    data.sales.forEach(sale => {
+                        // Remove any existing id to allow auto-increment
+                        const { id, ...saleWithoutId } = sale;
+                        salesStore.add(saleWithoutId);
+                    });
+                }
+                
+                transaction.oncomplete = () => {
+                    alert('Data imported successfully! The page will reload.');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                };
+                
+                transaction.onerror = () => {
+                    alert('Error importing data. Please try again.');
+                };
+            };
+            
+            request.onerror = () => {
+                alert('Error accessing database. Please try again.');
+            };
+        }
+
+        // Add import button functionality (optional)
+        document.querySelector('.footer').innerHTML += ' | <a href="#" onclick="importData()">Import Data</a>';
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Alt + S for Stock
+            if (e.altKey && e.key === 's') {
+                e.preventDefault();
+                window.location.href = 'stock/index.html';
+            }
+            // Alt + B for Billing
+            if (e.altKey && e.key === 'b') {
+                e.preventDefault();
+                window.location.href = 'billing/index.html';
+            }
+            // Alt + D for Dashboard
+            if (e.altKey && e.key === 'd') {
+                e.preventDefault();
+                window.location.href = 'dashboard/index.html';
+            }
+            // Alt + L for Login
+            if (e.altKey && e.key === 'l') {
+                e.preventDefault();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Show keyboard shortcut hint on first visit
+        if (!localStorage.getItem('shortcutsShown')) {
+            setTimeout(() => {
+                alert('Keyboard Shortcuts:\nAlt+S = Stock Management\nAlt+B = Billing\nAlt+D = Dashboard\nAlt+L = Login');
+                localStorage.setItem('shortcutsShown', 'true');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

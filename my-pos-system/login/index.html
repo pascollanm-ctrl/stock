@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Stock Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 600px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Left Panel - Welcome Section */
+        .welcome-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-panel::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -150px;
+            right: -100px;
+        }
+
+        .welcome-panel::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -50px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .welcome-content {
+            z-index: 1;
+        }
+
+        .welcome-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .welcome-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .features i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Right Panel - Login Form */
+        .login-panel {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .remember-me label {
+            color: #555;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #1f6396 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #555;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+            color: #7f8c8d;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #eee;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+        }
+
+        .demo-credentials h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .demo-credentials h4 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .demo-credentials p {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .demo-credentials strong {
+            color: #2c3e50;
+        }
+
+        .error-message {
+            background: #fdecea;
+            color: #e74c3c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 500px;
+                min-height: auto;
+            }
+            
+            .welcome-panel {
+                padding: 40px 30px;
+            }
+            
+            .login-panel {
+                padding: 40px 30px;
+            }
+            
+            .welcome-content h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .login-container {
+                border-radius: 15px;
+            }
+            
+            .welcome-panel, .login-panel {
+                padding: 30px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .login-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Panel - Welcome Section -->
+        <div class="welcome-panel">
+            <div class="logo">
+                <i class="fas fa-warehouse"></i>
+                <h1>StockMaster Pro</h1>
+            </div>
+            
+            <div class="welcome-content">
+                <h2>Welcome Back to Your Inventory Management System</h2>
+                <p>Access your complete POS system with inventory tracking, billing, and sales analytics in one secure platform.</p>
+                
+                <ul class="features">
+                    <li><i class="fas fa-check-circle"></i> Real-time inventory tracking</li>
+                    <li><i class="fas fa-check-circle"></i> Sales analytics and reporting</li>
+                    <li><i class="fas fa-check-circle"></i> Secure transaction processing</li>
+                    <li><i class="fas fa-check-circle"></i> Multi-user access control</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Login Form -->
+        <div class="login-panel">
+            <div class="login-header">
+                <h2>Sign In to Your Account</h2>
+                <p>Enter your credentials to access the dashboard</p>
+            </div>
+            
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> Invalid username or password. Please try again.
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Enter your username" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            
+            <!-- Demo Credentials -->
+            <div class="demo-credentials">
+                <h4><i class="fas fa-info-circle"></i> Demo Credentials</h4>
+                <p>For testing purposes, you can use:<br>
+                <strong>Username:</strong> admin<br>
+                <strong>Password:</strong> admin123</p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="login-footer">
+                <p>© 2023 StockMaster Pro. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const rememberMe = document.getElementById('rememberMe');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for saved credentials
+            const savedUsername = localStorage.getItem('savedUsername');
+            const savedPassword = localStorage.getItem('savedPassword');
+            
+            if (savedUsername && savedPassword) {
+                usernameInput.value = savedUsername;
+                passwordInput.value = savedPassword;
+                rememberMe.checked = true;
+            }
+            
+            // Set focus to username field
+            usernameInput.focus();
+        });
+
+        // Handle form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Basic validation
+            if (!username || !password) {
+                showError('Please enter both username and password.');
+                return;
+            }
+            
+            // Simple authentication (in a real app, this would be server-side)
+            if (authenticateUser(username, password)) {
+                // Save credentials if "Remember me" is checked
+                if (rememberMe.checked) {
+                    localStorage.setItem('savedUsername', username);
+                    localStorage.setItem('savedPassword', password);
+                } else {
+                    localStorage.removeItem('savedUsername');
+                    localStorage.removeItem('savedPassword');
+                }
+                
+                // Save user session
+                sessionStorage.setItem('isAuthenticated', 'true');
+                sessionStorage.setItem('username', username);
+                sessionStorage.setItem('loginTime', new Date().toISOString());
+                
+                // Redirect to main application
+                redirectToApp();
+            } else {
+                showError('Invalid username or password. Please try again.');
+                // Clear password field on failed attempt
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+
+        // Simple authentication function
+        function authenticateUser(username, password) {
+            // In a real application, this would be handled by a server
+            // For demo purposes, we have a few hardcoded users
+            
+            const validUsers = [
+                { username: 'admin', password: 'admin123', role: 'admin' },
+                { username: 'manager', password: 'manager123', role: 'manager' },
+                { username: 'staff', password: 'staff123', role: 'staff' },
+                { username: 'demo', password: 'demo123', role: 'demo' }
+            ];
+            
+            // Check if user exists
+            const user = validUsers.find(u => 
+                u.username.toLowerCase() === username.toLowerCase() && 
+                u.password === password
+            );
+            
+            if (user) {
+                // Store user info in session
+                sessionStorage.setItem('userRole', user.role);
+                return true;
+            }
+            
+            return false;
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorMessage.classList.add('show');
+            
+            // Hide error after 5 seconds
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        // Redirect to main application
+        function redirectToApp() {
+            // Show success animation/feedback
+            const submitBtn = loginForm.querySelector('.btn-primary');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Success! Redirecting...';
+            submitBtn.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+            
+            // Redirect after a short delay
+            setTimeout(() => {
+                // Check user role and redirect accordingly
+                const userRole = sessionStorage.getItem('userRole');
+                
+                // For demo purposes, all users go to the same place
+                // In a real app, you might redirect based on role
+                window.location.href = '../stock/index.html';
+            }, 1500);
+        }
+
+        // Forgot password functionality
+        document.querySelector('.forgot-password').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            
+            if (!username) {
+                showError('Please enter your username first to reset your password.');
+                usernameInput.focus();
+                return;
+            }
+            
+            // In a real app, this would send a reset request to the server
+            // For demo purposes, we'll show an alert
+            alert(`A password reset link has been sent to the email associated with "${username}".\n\nFor demo purposes, you can use:\nUsername: admin\nPassword: admin123`);
+        });
+
+        // Demo credentials auto-fill (for testing convenience)
+        document.querySelector('.demo-credentials').addEventListener('click', () => {
+            usernameInput.value = 'admin';
+            passwordInput.value = 'admin123';
+            rememberMe.checked = true;
+            
+            // Show a brief confirmation
+            const originalHTML = document.querySelector('.demo-credentials').innerHTML;
+            document.querySelector('.demo-credentials').innerHTML = 
+                '<h4><i class="fas fa-check-circle"></i> Credentials Applied</h4><p>Demo credentials have been filled in. Click "Sign In" to continue.</p>';
+            
+            setTimeout(() => {
+                document.querySelector('.demo-credentials').innerHTML = originalHTML;
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
